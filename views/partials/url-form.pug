@@ -1,0 +1,34 @@
+//- views/partials/url-form.pug
+mixin urlForm(formAction, originalUrl, customAlias)
+  form(action=formAction, method="POST")
+    .mb-3
+      label.form-label(for="originalUrl") Enter URL to shorten
+      input.form-control#originalUrl(
+        type="url", 
+        name="originalUrl", 
+        placeholder="https://example.com/long-url-to-shorten", 
+        value=originalUrl || "",
+        required
+      )
+    
+    .mb-3
+      label.form-label(for="customAlias") Custom Alias (Optional)
+      input.form-control#customAlias(
+        type="text", 
+        name="customAlias", 
+        placeholder="my-custom-alias", 
+        value=customAlias || "",
+        aria-describedby="aliasHelp"
+      )
+      small.form-text.text-muted#aliasHelp 3-20 characters, letters, numbers, hyphens, and underscores only
+    
+    .mb-3
+      label.form-label(for="expiryOption") URL Expiration
+      select.form-select#expiryOption(name="expiryOption")
+        option(value="never") Never
+        option(value="1h") 1 Hour
+        option(value="1d") 1 Day
+        option(value="7d") 7 Days
+        option(value="30d") 30 Days
+    
+    button.btn.btn-primary.w-100(type="submit") Shorten URL

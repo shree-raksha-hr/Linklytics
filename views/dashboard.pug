@@ -1,0 +1,91 @@
+//- views/dashboard.pug
+extends layouts/layout
+
+block content
+  h1.mb-4 Your Dashboard
+  
+  .row
+    .col-lg-5.mb-4
+      .card.shadow
+        .card-body
+          h2.card-title Create New Short URL
+          
+          if errors && errors.length > 0
+            .alert.alert-danger
+              each error in errors
+                p.mb-0= error.msg
+          
+          include partials/url-form
+          +urlForm('/url/shorten/auth', originalUrl, customAlias)
+    
+    .col-lg-7
+      .card.shadow
+        .card-body
+          h2.card-title Your URLs
+          
+          if urls && urls.length > 0
+            .table-responsive
+              table.table.table-hover
+                thead
+                  tr
+                    th Short URL
+                    th Original URL
+                    th Type
+                    th Clicks
+                    th Expires
+                    th QR Code
+                    th Actions
+                
+                tbody
+                  each url in urls
+                    tr
+                      td
+                        a(href=`/${url.shortId}`, target="_blank") #{url.shortId}
+                      td.text-truncate(style="max-width: 150px;")
+                        a(href=url.originalUrl, target="_blank", title=url.originalUrl) #{url.originalUrl}
+                      td
+                        if url.isCustom
+                          span.badge.bg-success Custom
+                        else
+                          span.badge.bg-secondary Auto
+                      td #{url.clicks}
+                      td
+                        if url.expiresAt
+                          span #{new Date(url.expiresAt).toLocaleDateString()}, #{new Date(url.expiresAt).toLocaleTimeString()}
+                        else
+                          span.text-muted Never
+                      td
+                        button.btn.btn-sm.btn-outline-primary(
+                          type="button", 
+                          data-bs-toggle="modal", 
+                          data-bs-target=`#qrModal${url._id}`,
+                          data-url-id=url._id
+                        ) View QR
+                      td
+                        form(action=`/url/delete/${url._id}`, method="POST")
+                          button.btn.btn-sm.btn-danger(type="submit") Delete
+                    
+                    //- QR Code Modal for each URL
+                    .modal.fade(id=`qrModal${url._id}`, tabindex="-1", aria-labelledby=`qrModalLabel${url._id}`, aria-hidden="true")
+                      .modal-dialog.modal-dialog-centered
+                        .modal-content
+                          .modal-header
+                            h5.modal-title(id=`qrModalLabel${url._id}`) QR Code for #{url.shortId}
+                            button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+                          .modal-body.text-center
+                            if url.qrCodeDataURL
+                              img.img-fluid(src=url.qrCodeDataURL, alt="QR Code", style="max-width: 300px")
+                              p.mt-3 Scan this QR code to access: 
+                                a(href=url.shortUrl, target="_blank") #{url.shortUrl}
+                              p.mb-0
+                                small This QR code redirects to: 
+                                  span.text-truncate #{url.originalUrl}
+                          .modal-footer
+                            a.btn.btn-outline-primary(href=url.qrCodeDataURL, download=`qrcode-${url.shortId}.png`) Download QR Code
+                            button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Close
+          else
+            .alert.alert-info No URLs found. Create your first shortened URL.
+
+block scripts
+  script.
+    // Add any client-side functionality here

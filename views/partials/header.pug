@@ -1,0 +1,21 @@
+//- views/partials/header.pug
+header
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
+    .container
+      a.navbar-brand(href="/") URL Shortener
+      
+      button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav")
+        span.navbar-toggler-icon
+      
+      .collapse.navbar-collapse#navbarNav
+        ul.navbar-nav.ms-auto
+          if currentUser
+            li.nav-item
+              a.nav-link(href="/dashboard") Dashboard
+            li.nav-item
+              a.nav-link(href="/auth/logout") Logout
+          else
+            li.nav-item
+              a.nav-link(href="/auth/login") Login
+            li.nav-item
+              a.nav-link(href="/auth/register") Register

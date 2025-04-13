@@ -1,0 +1,59 @@
+//- views/auth/register.pug
+extends ../layouts/layout
+
+block content
+  .row.justify-content-center
+    .col-md-6.col-lg-5
+      .card.shadow
+        .card-body
+          h1.card-title.text-center.mb-4 Create Account
+          
+          if errors && errors.length > 0
+            .alert.alert-danger
+              each error in errors
+                p.mb-0= error.msg
+          
+          form(action="/auth/register", method="POST")
+            .mb-3
+              label.form-label(for="username") Username
+              input.form-control#username(
+                type="text", 
+                name="username", 
+                placeholder="johndoe", 
+                value=user ? user.username : "",
+                required
+              )
+            
+            .mb-3
+              label.form-label(for="email") Email
+              input.form-control#email(
+                type="email", 
+                name="email", 
+                placeholder="youremail@example.com", 
+                value=user ? user.email : "",
+                required
+              )
+            
+            .mb-3
+              label.form-label(for="password") Password
+              input.form-control#password(
+                type="password", 
+                name="password", 
+                placeholder="Min 6 characters", 
+                required
+              )
+            
+            .mb-3
+              label.form-label(for="confirmPassword") Confirm Password
+              input.form-control#confirmPassword(
+                type="password", 
+                name="confirmPassword", 
+                placeholder="Confirm your password", 
+                required
+              )
+            
+            button.btn.btn-primary.w-100(type="submit") Register
+          
+          .mt-3.text-center
+            p.mb-0 Already have an account? 
+              a(href="/auth/login") Login

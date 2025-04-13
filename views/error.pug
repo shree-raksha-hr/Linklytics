@@ -1,0 +1,17 @@
+//- views/error.pug
+extends layouts/layout
+
+block content
+  .row.justify-content-center
+    .col-md-8.text-center
+      h1.display-4 Oops!
+      
+      if message
+        p.lead= message
+      else
+        p.lead Something went wrong.
+      
+      if error && Object.keys(error).length > 0
+        .card.mt-4
+          .card-body
+            

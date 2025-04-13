@@ -1,0 +1,57 @@
+//- views/index.pug
+extends layouts/layout
+
+block content
+  .row.justify-content-center
+    .col-md-8.col-lg-6
+      .card.shadow
+        .card-body
+          h1.card-title.text-center.mb-4 Shorten Your URL
+          
+          if errors && errors.length > 0
+            .alert.alert-danger
+              each error in errors
+                p.mb-0= error.msg
+          
+          include partials/url-form
+          +urlForm('/url/shorten', originalUrl, customAlias)
+          
+          if shortUrl
+            .mt-4
+              .alert.alert-success
+                p.mb-2 Your shortened URL:
+                .input-group
+                  input.form-control#shortUrlInput(type="text", value=shortUrl, readonly)
+                  button.btn.btn-outline-secondary#copyBtn(type="button" onClick="copyShortUrl()") Copy
+                
+                if qrCodeDataURL
+                  .text-center.mt-3
+                    h5 QR Code
+                    img.img-fluid.qr-code(src=qrCodeDataURL, alt="QR Code", style="max-width: 200px")
+                    a.btn.btn-sm.btn-outline-primary.mt-2(href=qrCodeDataURL, download="qrcode.png") Download QR
+                
+                p.mt-3.mb-0
+                  small Original URL: 
+                    a(href=originalUrl, target="_blank")= originalUrl
+          
+          .mt-4.text-center
+            p.text-muted Create an account to track and manage your shortened URLs.
+            if !currentUser
+              .d-flex.justify-content-center.gap-2
+                a.btn.btn-outline-primary(href="/auth/login") Login
+                a.btn.btn-outline-secondary(href="/auth/register") Register
+
+block scripts
+  if shortUrl
+    script.
+      function copyShortUrl() {
+        const shortUrlInput = document.getElementById('shortUrlInput');
+        shortUrlInput.select();
+        document.execCommand('copy');
+        
+        const copyBtn = document.getElementById('copyBtn');
+        copyBtn.innerText = 'Copied!';
+        setTimeout(() => {
+          copyBtn.innerText = 'Copy';
+        }, 2000);
+      }
